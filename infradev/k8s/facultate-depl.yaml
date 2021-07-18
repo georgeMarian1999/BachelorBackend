@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facultate-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: facultate
+  template:
+    metadata:
+      labels:
+        app: facultate
+    spec:
+      containers:
+        - name: facultate
+          image: george1999/facultate
+          env:
+            - name: jwt
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: jwt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: facultate-service
+spec:
+  selector:
+    app: facultate
+  ports:
+    - name: facultate
+      protocol: TCP
+      port: 3502
+      targetPort: 3502

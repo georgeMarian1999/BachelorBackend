@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+spec:
+  rules:
+    - host: licenta.com
+      http:
+        paths:
+          - path: /users/?(.*)
+            backend:
+              serviceName: auth-service
+              servicePort: 3504
+          - path: /profesor/?(.*)
+            backend:
+              serviceName: profesor-service
+              servicePort: 3501
+          - path: /facultate/?(.*)
+            backend:
+              serviceName: facultate-service
+              servicePort: 3502
+          - path: /colaborare/?(.*)
+            backend:
+              serviceName: colaborare-service
+              servicePort: 3503

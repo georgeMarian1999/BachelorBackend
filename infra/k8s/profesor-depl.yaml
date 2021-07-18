@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profesor-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profesor
+  template:
+    metadata:
+      labels:
+        app: profesor
+    spec:
+      containers:
+        - name: profesor
+          image: george1999/profesor
+          env:
+            - name: jwt
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: jwt
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: licenta
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profesor-service
+spec:
+  selector:
+    app: profesor
+  ports:
+    - name: profesor
+      protocol: TCP
+      port: 3501
+      targetPort: 3501
